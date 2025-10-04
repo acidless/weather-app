@@ -4,6 +4,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import {GeocodingAPI} from "./API/GeocodingAPI";
 import {WeatherAPI} from "./API/WeatherAPI";
+import Cache from "./Cache";
 
 dotenv.config();
 
@@ -16,19 +17,33 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), 'public')));
 
-app.get('/weather', async (req, res) => {
-    const {city} = req.query;
-    if (!city) {
-        return res.status(400).json({error: 'City is required.'});
-    }
+async function main() {
+    console.log("Starting the server...");
+    const cache = await Cache.create();
+    const geocodingAPI = new GeocodingAPI(cache);
+    const weatherAPI = new WeatherAPI(cache);
 
-    const geocodingAPI = new GeocodingAPI();
-    const weatherAPI = new WeatherAPI();
-    const coordinates = await geocodingAPI.getCityCoordinates(city as string);
-    const forecast = await weatherAPI.getForecast(coordinates);
-    res.json({forecast});
-});
+    app.get('/weather', async (req, res) => {
+        const { city } = req.query;
+        if (!city) {
+            return res.status(400).json({ error: 'City is required.' });
+        }
 
-app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+        try {
+            const coordinates = await geocodingAPI.getCityCoordinates(city as string);
+            const forecast = await weatherAPI.getForecast(coordinates);
+            res.json({ forecast });
+        } catch (err) {
+            res.status(500).json({ error: (err as Error).message });
+        }
+    });
+
+    app.listen(PORT, () => {
+        console.log(`Server listening on port ${PORT}`);
+    });
+}
+
+main().catch(err => {
+    console.error("Failed to start app:", err);
+    process.exit(1);
 });
