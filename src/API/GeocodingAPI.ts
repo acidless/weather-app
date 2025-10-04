@@ -11,7 +11,7 @@ export class GeocodingAPI extends API {
     }
 
     async getCityCoordinates(city: string): Promise<Coordinates> {
-        const response = await this.client.get(`city?name=${city}&count=1&language=en&format=json`);
+        const response = await this.client.get(`city?name=${city}`);
         const results = response.data.results;
         if (results && results.length > 0) {
             return {

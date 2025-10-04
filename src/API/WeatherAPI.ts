@@ -1,7 +1,7 @@
 import API from "./API";
 import {Coordinates} from "./GeocodingAPI";
 
-class WeatherAPI extends API {
+export class WeatherAPI extends API {
     public constructor() {
         super("https://api.open-meteo.com/v1/");
     }
