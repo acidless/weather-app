@@ -25,13 +25,13 @@ async function main() {
     app.get('/weather', async (req, res) => {
         const {city} = req.query;
         if (!city) {
-            return res.status(400).json({error: 'City is required.'});
+            return res.status(400).json({success: false, error: 'City is required.'});
         }
 
         try {
             const coordinates = await geocodingAPI.getCityCoordinates(city as string);
             const forecast = await weatherAPI.getForecast(coordinates);
-            res.json({settlement: coordinates.settlement, weather:{...forecast}});
+            res.json({success: true, settlement: coordinates.settlement, weather:{...forecast}});
         } catch (err) {
             res.status(500).json({success: false, error: (err as Error).message});
         }
