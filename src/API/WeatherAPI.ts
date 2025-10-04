@@ -22,7 +22,7 @@ export class WeatherAPI extends API {
 
         const response = await this.client.get(
             `forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m`);
-        await this.cache.set(key, response.data.hourly);
+        await this.cache.set(key, response.data.hourly.forecast);
         return response.data.hourly;
     }
 }
