@@ -9,6 +9,7 @@
 
 html {
     --background: #252525;
+    --secondary-bg: #131313;
     --text-color: #c0c0c0;
     --text-dark: #212121;
     --main-color: #4fd1c5;
@@ -34,6 +35,7 @@ button {
     padding: 0.25rem 0.5rem;
     border-radius: 0.5rem;
     color: var(--text-dark);
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 .container {
@@ -47,4 +49,40 @@ button {
     justify-content: center;
     align-items: center;
     margin-bottom: 1rem;
+}
+
+.weather-chart__days {
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: stretch;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0 0.75rem 0 3rem;
+}
+
+.weather-chart__days button {
+    flex: 1;
+    background: var(--secondary-bg);
+    color: var(--text-color);
+    padding: 2rem 0;
+}
+
+.weather-chart__days button.active,
+.weather-chart__days button:hover
+{
+    background: var(--main-color);
+    color: var(--text-dark);
+}
+
+@media screen and (max-width: 768px) {
+    .weather-chart__days {
+        padding: 0;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .container {
+        padding: 0 0.5rem;
+    }
 }

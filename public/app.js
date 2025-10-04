@@ -17,17 +17,7 @@ async function getWeather(settlement) {
       const data = await response.json();
 
       if (response.status === 200) {
-         const hours = data.time.map(time => {
-            const d = new Date(time);
-            return d.toLocaleString("ru-RU", {
-               day: "2-digit",
-               month: "2-digit",
-               hour: "2-digit",
-               minute: "2-digit"
-            });
-         });
-
-         updateChart(data.settlement, hours, data.temperature_2m);
+         updateChartSection(data.settlement, data.weather);
       } else {
          alert(data.error);
       }
@@ -38,20 +28,63 @@ async function getWeather(settlement) {
 }
 
 let currentChart = null;
-function updateChart(title, labels, data) {
-   if (currentChart) {
-      currentChart.destroy();
+let prevActiveBtn = null;
+function updateChartSection(title, weather) {
+   clearPrevData()
+
+   const chartContainer = document.querySelector('.weather-chart');
+   const chartButtons = chartContainer.querySelector('.weather-chart__days');
+
+   for(let key in weather) {
+      const {time, temperature} = weather[key];
+
+      const button = `<button data-day="${key}" ${!currentChart ? "class=active" : ""}>${key}</button>`;
+      chartButtons.insertAdjacentHTML('beforeend', button);
+
+      if(!currentChart) {
+         currentChart = makeChart(chartContainer.querySelector("canvas"), title, time, temperature);
+      }
    }
 
-   const ctx = document.getElementById('weather-chart');
+   const dayButtons = document.querySelectorAll(".weather-chart__days button");
+   prevActiveBtn = dayButtons[0];
 
-   currentChart = new Chart(ctx, {
+   dayButtons.forEach(button => {
+      button.addEventListener("click", () => {
+         button.classList.add("active");
+         if(prevActiveBtn) {
+            prevActiveBtn.classList.remove("active");
+            prevActiveBtn = button;
+         }
+
+         const day = button.getAttribute("data-day");
+         const {time, temperature} = weather[day];
+
+         currentChart.destroy();
+         currentChart = makeChart(chartContainer.querySelector("canvas"), title, time, temperature);
+      });
+   });
+}
+
+function clearPrevData() {
+   if (currentChart) {
+      currentChart.destroy();
+      currentChart = null;
+   }
+
+   document.querySelectorAll(".weather-chart__days button").forEach(button => {
+      button.remove();
+   });
+}
+
+function makeChart(canvas, title, time, temperature) {
+   return new Chart(canvas, {
       type: 'line',
       data: {
-         labels,
+         labels: time,
          datasets: [{
             label: 'Temperature (°C)',
-            data,
+            data: temperature,
             borderColor: '#4fd1c5',
             backgroundColor: 'rgba(79, 209, 197, 0.2)',
             tension: 0.4,

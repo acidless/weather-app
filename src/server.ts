@@ -32,7 +32,7 @@ async function main() {
         try {
             const coordinates = await geocodingAPI.getCityCoordinates(city as string);
             const forecast = await weatherAPI.getForecast(coordinates);
-            res.json({settlement: coordinates.settlement, ...forecast});
+            res.json({settlement: coordinates.settlement, weather:{...forecast}});
         } catch (err) {
             res.status(500).json({success: false, error: (err as Error).message});
         }
