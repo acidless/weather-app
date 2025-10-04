@@ -1,7 +1,8 @@
 import { RedisMemoryServer } from "redis-memory-server";
 import Redis from "ioredis";
 
-const TIME_TO_LIVE = 15 * 60;
+const CACHE_MINS = process.env.CACHE_MINS ? Number(process.env.CACHE_MINS) : 15;
+const TIME_TO_LIVE = CACHE_MINS * 60;
 
 class Cache {
     private constructor(private server: RedisMemoryServer, private redis: Redis) {}
