@@ -7,10 +7,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Weather App</title>
     <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 </head>
 <body>
 <main>
     <div class="container">
+        <div class="search-block">
+            <form class="get-weather-form" action="#">
+                <input name="settlement" type="text" placeholder="Enter settlement...">
+                <button>Search</button>
+            </form>
+        </div>
         <canvas id="weather-chart"></canvas>
     </div>
 </main>

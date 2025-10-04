@@ -2,6 +2,7 @@ import API from "./API";
 import Cache from "../Cache";
 
 export type Coordinates = {
+    settlement: string;
     latitude: number;
     longitude: number;
 }
@@ -21,6 +22,7 @@ export class GeocodingAPI extends API {
         const results = response.data.results;
         if (results && results.length > 0) {
             const coordinates = {
+                settlement: results[0].name,
                 latitude: results[0].latitude,
                 longitude: results[0].longitude,
             };
